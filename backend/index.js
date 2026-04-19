@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import initFirebase from "./config/firebase.js";
 import userRoutes from "./routes/userRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js"
 
 // Initialize the Express app
 const app = express();
@@ -21,7 +22,7 @@ app.get('/', (req, res) => {
   res.send('Campus Event API is running...');
 });
 app.use('/api/users', userRoutes);
-
+app.use('/api/events', eventRoutes);
 
 
 const PORT = process.env.PORT || 5000;
