@@ -13,7 +13,12 @@ import { startCronJobs } from "./cronJobs.js";
 const app = express();
 
 // Middleware
-app.use(cors({origin: 'http://localhost:5173', 'https://campus-event-management-and-ticketi.vercel.app'})); // Allow requests from our React frontend
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://campus-event-management-and-ticketi.vercel.app'
+  ]
+}));
 app.use(express.json()); // Allows us to parse JSON data sent in request bodies
 
 // DEBUG: Log all requests
