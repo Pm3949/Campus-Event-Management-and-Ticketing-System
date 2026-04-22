@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'fire
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const BACKEND_URL = 'http://localhost:5001';
+const BACKEND_URL = 'https://campus-event-management-and-ticketing.onrender.com';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);

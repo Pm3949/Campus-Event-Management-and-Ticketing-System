@@ -4,7 +4,7 @@ import axios from 'axios';
 import { auth } from '../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
-const BACKEND_URL = 'http://localhost:5001';
+const BACKEND_URL = 'https://campus-event-management-and-ticketing.onrender.com';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('events');

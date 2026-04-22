@@ -6,7 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { QRCodeSVG } from 'qrcode.react';
 import { Link } from 'react-router-dom';
 
-const BACKEND_URL = 'http://localhost:5001';
+const BACKEND_URL = 'https://campus-event-management-and-ticketing.onrender.com';
 
 export default function MyTickets() {
   const [tickets, setTickets] = useState([]);

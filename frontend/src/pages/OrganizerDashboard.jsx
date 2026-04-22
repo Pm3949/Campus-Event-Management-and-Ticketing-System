@@ -5,7 +5,7 @@ import { auth } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = "http://localhost:5001";
+const BACKEND_URL = 'https://campus-event-management-and-ticketing.onrender.com';
 
 export default function OrganizerDashboard() {
   const [events, setEvents] = useState([]);
