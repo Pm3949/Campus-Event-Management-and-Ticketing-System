@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['student', 'organizer', 'admin'], // Restricts roles to only these three
     default: 'student',
-  }
+  },
+  fcmToken: {
+    type: String,
+    default: null
+  },
 }, { timestamps: true }); // Automatically adds createdAt and updatedAt dates
 
 const User = mongoose.model('User', userSchema);

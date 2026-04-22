@@ -1,3 +1,4 @@
+// controllers/eventController.js
 import Event from "../models/Events.js";
 
 export const createEvent = async (req, res) => {
@@ -19,7 +20,8 @@ export const createEvent = async (req, res) => {
             eventDate,
             category,
             participantLimit,
-            organizer: req.user._id, // Link the event to the organizer's user ID
+
+            organizers: [req.user._id], 
             status: 'pending' // New events start as pending and require admin approval
         })
 
@@ -40,9 +42,7 @@ export const getPendingEvents = async (req, res) => {
         if(req.user.role !== 'admin'){
             return res.status(403).json({ message: 'Access Denied: Admin only' });
         }
-
-        // Fetch events that are pending approval
-        const pendingEvents = await Event.find({ status: 'pending' }).populate('organizer', 'name email');
+        const pendingEvents = await Event.find({ status: 'pending' }).populate('organizers', 'name email');
         res.status(200).json({ pendingEvents });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching pending events', error });
@@ -50,7 +50,7 @@ export const getPendingEvents = async (req, res) => {
 };
 
 // Approve or reject an event (Admin only)
-export const upadteEventStatus = async (req, res) => {
+export const updateEventStatus = async (req, res) => {
     try {
         if(req.user.role !== 'admin'){
             return res.status(403).json({ message: 'Access Denied: Admin only' });
@@ -62,30 +62,39 @@ export const upadteEventStatus = async (req, res) => {
         }
 
         // Update the event's status
-        const upadtedEvent = await Event.findByIdAndUpdate(
+        const updatedEvent = await Event.findByIdAndUpdate(
             req.params.id, // Event ID from the URL
             { status },
            { returnDocument: 'after' } // Return the updated document
         );
 
-        if(!upadtedEvent){
+        if(!updatedEvent){
             return res.status(404).json({ message: 'Event not found' });
         }
-        res.status(200).json({ message: `Event ${status} successfully`, event: upadtedEvent });
+        res.status(200).json({ message: `Event ${status} successfully`, event: updatedEvent });
 
     } catch (error) {
         res.status(500).json({ message: 'Error updating event status', error });
     }
 };
 
-
 export const getApprovedEvents = async (req, res) => {
     try {
         // Fetch events that are approved
-        const approvedEvents = await Event.find({ status: 'approved' }).populate('organizer', 'name email');
+        const approvedEvents = await Event.find({ status: 'approved' }).populate('organizers', 'name email');
         res.status(200).json({ approvedEvents });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching approved events', error });
     }
 };
 
+// Get events created by the logged-in organizer
+export const getMyEvents = async (req, res) => {
+  try {
+    // Find events where this user's ID is inside the 'organizers' array
+    const events = await Event.find({ organizers: req.user._id });
+    res.status(200).json({ events });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching your events', error: error.message });
+  }
+};

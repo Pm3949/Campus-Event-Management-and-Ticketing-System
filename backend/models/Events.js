@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema({
-    title: {
+  title: {
     type: String,
     required: true,
   },
@@ -29,11 +29,10 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  organizer: {
+  organizers: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Links to the User model
-    required: true,
-  },
+    ref: 'User'
+  }],
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'], // Admins must approve/reject 

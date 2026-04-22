@@ -15,6 +15,13 @@ export const registerForEvent = async (req, res) => {
         .json({ message: "Event not found or not approved" });
     }
 
+    // Check if the event date is in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of today
+    if (new Date(event.eventDate) < today) {
+      return res.status(400).json({ message: "This event has already ended." });
+    }
+
     // Check if event is already at capacity
     if (event.currentRegistrations >= event.participantLimit) {
       return res.status(400).json({ message: "Event is at full capacity" });
@@ -71,22 +78,37 @@ export const verifyTicket = async (req, res) => {
 
     const { qrCodeData } = req.body;
 
+    // 1. Notice we added 'organizer' to the event population!
     const ticket = await Registration.findOne({ qrCodeData })
       .populate('student', 'name email')
-      .populate('event', 'title');
+      .populate('event', 'title organizers');
 
     if (!ticket) {
       return res.status(404).json({ message: 'Invalid or Fake Ticket!' });
     }
 
-    // NEW LOGIC: Check if they are already marked as present!
+    // 2. NEW MULTI-ORGANIZER SECURITY CHECK
+    if (req.user.role === 'organizer') {
+      // Check if the logged-in user is inside the array of organizers for this event
+      const isCoOrganizer = ticket.event.organizers.some(
+        (orgId) => orgId.toString() === req.user._id.toString()
+      );
+      
+      if (!isCoOrganizer) {
+        return res.status(403).json({ 
+          message: 'Access Denied: You are not an organizer for this event!' 
+        });
+      }
+    }
+
+    // 3. Check if they are already marked as present
     if (ticket.isCheckedIn) {
       return res.status(400).json({ 
         message: 'Ticket already used! Student has already checked in.' 
       });
     }
 
-    // If it's their first time scanning, mark them as checked in and save to DB
+    // 4. Mark them as checked in
     ticket.isCheckedIn = true;
     await ticket.save();
 
@@ -99,5 +121,20 @@ export const verifyTicket = async (req, res) => {
   } catch (error) {
     console.error('Error verifying ticket:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// Get all participants for a specific event
+export const getEventParticipants = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    
+    // Find all registrations for this event and populate the student details
+    const participants = await Registration.find({ event: eventId })
+      .populate('student', 'name email');
+      
+    res.status(200).json({ participants });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching participants', error: error.message });
   }
 };
