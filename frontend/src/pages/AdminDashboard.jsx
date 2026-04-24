@@ -278,7 +278,7 @@ export default function AdminDashboard() {
                       <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">{event.title}</h3>
                       <div className="text-sm text-zinc-400 space-y-1.5 mb-4 font-medium">
                         <p>📍 {event.venue}</p>
-                        <p>👤 {event.organizer?.name || 'Unknown'}</p>
+                        <p>👤 {event.organizers?.name || 'Unknown'}</p>
                       </div>
                       <p className="text-sm text-zinc-500 line-clamp-3">{event.description}</p>
                     </div>
