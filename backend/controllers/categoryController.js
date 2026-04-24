@@ -14,11 +14,6 @@ export const createCategory = async (req, res) => {
       return res.status(400).json({ message: 'Category name is required' });
     }
 
-    const existingCategory = await Category.findOne({ name: name.trim() });
-    if (existingCategory) {
-      return res.status(400).json({ message: 'Category already exists' });
-    }
-
     const category = new Category({
       name: name.trim(),
       description: description || '',
@@ -28,6 +23,9 @@ export const createCategory = async (req, res) => {
     await category.save();
     res.status(201).json({ message: 'Category created successfully', category });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: 'Category already exists' });
+    }
     res.status(500).json({ message: 'Error creating category', error: error.message });
   }
 };

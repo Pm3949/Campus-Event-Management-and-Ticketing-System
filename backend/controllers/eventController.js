@@ -61,11 +61,11 @@ export const updateEventStatus = async (req, res) => {
             return res.status(400).json({ message: 'Invalid status value' });
         }
 
-        // Update the event's status
-        const updatedEvent = await Event.findByIdAndUpdate(
-            req.params.id, // Event ID from the URL
+        // Update the event's status only if it is currently pending
+        const updatedEvent = await Event.findOneAndUpdate(
+            { _id: req.params.id, status: 'pending' }, // Status guard
             { status },
-           { returnDocument: 'after' } // Return the updated document
+           { new: true } // Return the updated document
         );
 
         if(!updatedEvent){

@@ -38,7 +38,7 @@ const eventSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'], // Admins must approve/reject 
     default: 'pending',
   }
-}, { timestamps: true });
+}, { timestamps: true, optimisticConcurrency: true });
 
 const Event = mongoose.model('Event', eventSchema);
 export default Event;
