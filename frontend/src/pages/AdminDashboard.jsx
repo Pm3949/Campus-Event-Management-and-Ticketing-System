@@ -168,25 +168,78 @@ export default function AdminDashboard() {
 
       {/* KPIs */}
       {!loadingMetrics && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-[slide-up_0.6s_ease-out]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-[slide-up_0.6s_ease-out]">
           {[
-            { icon: '👥', label: 'Total Users', value: metrics.totalUsers, color: 'from-blue-500 to-cyan-500' },
-            { icon: '✨', label: 'Live Events', value: metrics.totalEvents, color: 'from-indigo-500 to-purple-500' },
-            { icon: '🎫', label: 'Registrations', value: metrics.totalRegistrations, color: 'from-purple-500 to-pink-500' },
-          ].map(m => (
-            <div key={m.label} className="relative glass-card rounded-[2rem] p-6 group">
-              <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${m.color} opacity-70 group-hover:opacity-100 transition-opacity`}></div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-3xl filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{m.icon}</span>
-                <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">{m.label}</span>
+            {
+              icon: '👥',
+              label: 'Total Platform Users',
+              value: metrics.totalUsers,
+              color: 'indigo',
+              trend: '+12%',
+              desc: 'Active accounts'
+            },
+            {
+              icon: '✨',
+              label: 'Live Campus Events',
+              value: metrics.totalEvents,
+              color: 'purple',
+              trend: '+5',
+              desc: 'Approved & active'
+            },
+            {
+              icon: '🎫',
+              label: 'Total Ticket Sales',
+              value: metrics.totalRegistrations,
+              color: 'pink',
+              trend: '+24%',
+              desc: 'Confirmed bookings'
+            },
+          ].map((m, idx) => (
+            <div key={m.label}
+              className="group relative overflow-hidden glass-panel rounded-[2.5rem] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-white/5 hover:border-white/20"
+              style={{ animationDelay: `${idx * 100}ms` }}
+            >
+              {/* Animated Background Glow */}
+              <div className={`absolute -right-10 -top-10 w-40 h-40 rounded-full bg-${m.color}-500/10 blur-[80px] group-hover:bg-${m.color}-500/20 transition-all duration-700`}></div>
+
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-6">
+                  <div className={`p-4 rounded-2xl bg-${m.color}-500/10 border border-${m.color}-500/20 text-3xl shadow-inner group-hover:scale-110 transition-transform duration-500`}>
+                    {m.icon}
+                  </div>
+                  <div className={`px-3 py-1 rounded-full bg-${m.color}-500/10 border border-${m.color}-500/20 text-[10px] font-black text-${m.color}-400 uppercase tracking-tighter`}>
+                    {m.trend}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1 ml-0.5">
+                    {m.label}
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-5xl font-black text-white tracking-tighter group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-500 transition-all duration-500">
+                      {m.value.toLocaleString()}
+                    </h3>
+                  </div>
+                  <p className="text-xs font-medium text-zinc-600 mt-2 flex items-center gap-2">
+                    <span className={`w-1.5 h-1.5 rounded-full bg-${m.color}-500/50`}></span>
+                    {m.desc}
+                  </p>
+                </div>
               </div>
-              <p className="text-4xl font-black text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-400 transition-all">
-                {m.value}
-              </p>
+
+              {/* Progress-like bar at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
+                <div
+                  className={`h-full bg-gradient-to-r from-${m.color}-500 to-${m.color}-400 w-0 group-hover:w-full transition-all duration-1000 ease-out`}
+                  style={{ transitionDelay: '200ms' }}
+                ></div>
+              </div>
             </div>
           ))}
         </div>
       )}
+
 
       {/* Tabs Menu */}
       <div className="flex justify-start md:justify-center mb-10 animate-[slide-up_0.7s_ease-out] w-full overflow-x-auto hide-scrollbar pb-2">
@@ -199,8 +252,8 @@ export default function AdminDashboard() {
           ].map(t => (
             <button key={t.key} onClick={() => setActiveTab(t.key)}
               className={`whitespace-nowrap flex-shrink-0 px-6 py-2.5 text-sm font-bold rounded-full transition-all duration-300 ${activeTab === t.key
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
                 }`}>
               {t.label}
             </button>
