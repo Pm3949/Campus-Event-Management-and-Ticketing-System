@@ -166,7 +166,7 @@ export default function AdminDashboard() {
         <p className="text-zinc-400 text-lg">Oversee the entire platform from one place.</p>
       </div>
 
-      {/* KPIs */}
+      /* {/* KPIs */}
       {!loadingMetrics && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-[slide-up_0.6s_ease-out]">
           {[
@@ -238,7 +238,40 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
-      )}
+      )} */
+
+      {/* KPIs */}
+{!loadingMetrics && (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-[slide-up_0.6s_ease-out]">
+    {[
+      { icon: '👥', label: 'Total Users', value: metrics.totalUsers, color: 'from-blue-500 to-cyan-500' },
+      { icon: '✨', label: 'Live Events', value: metrics.totalEvents, color: 'from-indigo-500 to-purple-500' },
+      { icon: '🎫', label: 'Registrations', value: metrics.totalRegistrations, color: 'from-purple-500 to-pink-500' },
+    ].map(m => (
+      <div key={m.label} className="relative glass-card rounded-[2rem] p-8 group flex flex-col justify-between h-44">
+        {/* Top Accent Bar */}
+        <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${m.color} opacity-70 group-hover:opacity-100 transition-opacity`}></div>
+        
+        {/* Icon and Label Row */}
+        <div className="flex justify-between items-start">
+          <span className="text-3xl filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+            {m.icon}
+          </span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 pt-2">
+            {m.label}
+          </span>
+        </div>
+        
+        {/* Value - Pushed to the bottom */}
+        <div className="mt-auto">
+          <p className="text-5xl font-black text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-400 transition-all">
+            {m.value}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
 
 
       {/* Tabs Menu */}
