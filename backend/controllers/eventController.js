@@ -1,5 +1,7 @@
 // controllers/eventController.js
 import Event from "../models/Events.js";
+import Registration from "../models/Registration.js";
+
 
 export const createEvent = async (req, res) => {
     try {
@@ -98,3 +100,32 @@ export const getMyEvents = async (req, res) => {
     res.status(500).json({ message: 'Error fetching your events', error: error.message });
   }
 };
+
+export const deleteEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Authorization check: Only the organizer of this event (or an admin) can delete it
+    const isOrganizer = event.organizers.includes(req.user._id);
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOrganizer && !isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to delete this event' });
+    }
+
+    // Delete all registrations for this event
+    await Registration.deleteMany({ event: eventId });
+
+    // Delete the event itself
+    await Event.findByIdAndDelete(eventId);
+
+    res.status(200).json({ message: 'Event and associated registrations deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting event', error: error.message });
+  }
+};
